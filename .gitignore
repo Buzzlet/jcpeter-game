@@ -1,0 +1,2 @@
+# Stop including the generated class files, that gets really annoying.
+**/*.class
