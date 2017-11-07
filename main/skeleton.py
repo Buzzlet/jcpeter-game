@@ -57,14 +57,12 @@ class Skeleton(CombatSprite):
 
     def draw(self, x, y):
         if self in Room.currentRoom.spritesInRoom:
-            a,b,c,d = self.getRect()
-            rect(a,b,c,d)
             
             #TODO: Get some placeholder skeleton animations
             if self.velocity[0] >= 0:
-                #self.currentAnimation.display(x - Character.sizeX, y - Character.sizeY)
+                self.currentAnimation.display(x - Skeleton.sizeX, y - Skeleton.sizeY)
             else:
-                #self.currentAnimation.flipXDisplay(x - Character.sizeX, y - Character.sizeY)
+                self.currentAnimation.flipXDisplay(x - Skeleton.sizeX, y - Skeleton.sizeY)
         
             if not self.moving:
                 self.currentAnimation = self.animations[IDLE]
