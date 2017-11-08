@@ -32,14 +32,26 @@ class Dungeon(object):
             # random existing room to add on to (0-len(rooms[]-1))
             chosenRoom = r.randint(0, len(self.rooms) - 1)
             # random room type (0-4)
-            roomType = Room.END if len(self.rooms) + 1 == roomCount else r.randint(Room.START, Room.EMPTY) 
+            roomType = Room.END if len(self.rooms) + 1 == roomCount else r.randint(Room.PUZZLE, Room.EMPTY) 
             # random direction (0-3)
             roomDir = r.randint(WEST, SOUTH)
             self.addRoom(self.rooms[chosenRoom], roomType, roomDir)
-            if roomType == Room.BATTLE:
-                self.rooms[len(self.rooms)-1].spritesInRoom.append(Skeleton(initPos=(600, 600)))
-        
-            
+        for room in self.rooms:
+            if room.type == Room.BATTLE:
+                for i in range(r.randint(1,100)):
+                    newBaddy = Skeleton()
+                    xPos = r.randint(Room.currentRoom.boundingBox[WEST] + newBaddy.currentAnimation.images[0].width/2,
+                                     Room.currentRoom.boundingBox[EAST] - newBaddy.currentAnimation.images[0].width/2)
+                    yPos = r.randint(Room.currentRoom.boundingBox[NORTH] + newBaddy.currentAnimation.images[0].height/2,
+                                     Room.currentRoom.boundingBox[SOUTH] - newBaddy.currentAnimation.images[0].height/2)
+                    newBaddy.location = (xPos, yPos)
+                    newBaddy.boundingBox = (xPos - Skeleton.sizeX,
+                                            yPos - Skeleton.sizeY,
+                                            xPos + Skeleton.sizeX,
+                                            yPos + Skeleton.sizeY)
+                    room.spritesInRoom.append(newBaddy)
+
+
     def addRoom(self, adjRoom, type, direction=NO_DIR):
         # print "Add Room Called"
         # assign the room new coords relative to the adjacent room 

@@ -35,7 +35,7 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game(startSize=3, sizeScale=3, levelCount=2)
+    ourGame = Game(startSize=10, sizeScale=3, levelCount=2)
     updateGameInfo()
     player = character.Character()
     

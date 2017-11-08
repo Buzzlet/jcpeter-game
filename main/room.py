@@ -113,6 +113,7 @@ class Room(Sprite):
         self.locked = True
         
         
+        
     
 
     def enter(self, enterDirection):

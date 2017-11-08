@@ -11,7 +11,7 @@ class Skeleton(CombatSprite):
     
     skeleWalkPrefix = 'skeleWalk'
     skeleWalkType = '.png'
-    skeleWalkNumFrames = 7
+    skeleWalkNumFrames = 12
     
     skeleAttackPrefix = 'skeleAttack'
     skeleAttackType = '.png'
@@ -54,20 +54,33 @@ class Skeleton(CombatSprite):
                                     Skeleton.skeleJumpType,
                                     Skeleton.skeleJumpNumFrames, 10)]
         self.currentAnimation = self.animations[IDLE]
+        self.setWalkX(EAST)
+        self.setWalkY(NORTH)
 
     def draw(self, x, y):
         if self in Room.currentRoom.spritesInRoom:
-            
-            #TODO: Get some placeholder skeleton animations
+        
             if self.velocity[0] >= 0:
-                self.currentAnimation.display(x - Skeleton.sizeX, y - Skeleton.sizeY)
-            else:
                 self.currentAnimation.flipXDisplay(x - Skeleton.sizeX, y - Skeleton.sizeY)
+            else:
+                self.currentAnimation.display(x - Skeleton.sizeX, y - Skeleton.sizeY)
         
             if not self.moving:
                 self.currentAnimation = self.animations[IDLE]
             else:
                 self.currentAnimation = self.animations[WALKING]
+            
+    
+    def updatePosition(self, timePassed):
+        dx = self.velocity[x] * timePassed
+        dy = self.velocity[y] * timePassed
+        if abs(dy) > 0 or abs(dx) > 0:
+            self.moving = True
+        else:
+            self.moving = False
+        moveX, moveY = self.validMove(timePassed)
+        self.move(moveX, moveY)
+            
             
     def movingChecks(self, timePassed):
         pass

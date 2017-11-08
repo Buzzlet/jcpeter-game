@@ -15,7 +15,7 @@ class CombatSprite(Sprite):
         Sprite.autoMoveSprites.append(drawer)
         
     
-    def updatePosition(self, timePassed):
+    def validMove(self, timePassed):
         dx = self.velocity[x] * timePassed
         dy = self.velocity[y] * timePassed
         left, top, right, bottom = self.boundingBox
@@ -27,21 +27,34 @@ class CombatSprite(Sprite):
         futureRight = right + dx
         futureTop = top + dy
         futureBottom = bottom + dy
+    
+        moveX = 0
+        moveY = 0
+        # no CombatSprites can leave the bounding box of the room
+        if inZone((futureLeft, top, futureRight, bottom), Room.currentRoom.boundingBox):
+            if inZone((futureLeft, futureTop, futureRight, futureBottom), Room.currentRoom.boundingBox):
+                moveX = dx
+                moveY = dy
+            else:
+                moveX = dx
+        elif inZone((left, futureTop, right, futureBottom), Room.currentRoom.boundingBox):
+            moveY = dy
+        return (moveX, moveY)
+            
+    
+    def updatePosition(self, timePassed):
+        dx = self.velocity[x] * timePassed
+        dy = self.velocity[y] * timePassed
         if abs(dy) > 0 or abs(dx) > 0:
             self.moving = True
         else:
             self.moving = False
             
+        moveX, moveY = self.validMove(timePassed)
         self.drawer.movingChecks(timePassed)
-            
-        # no CombatSprites can leave the bounding box of the room
-        if inZone((futureLeft, top, futureRight, bottom), Room.currentRoom.boundingBox):
-            if inZone((futureLeft, futureTop, futureRight, futureBottom), Room.currentRoom.boundingBox):
-                self.move(dx, dy)
-            else:
-                self.move(dx, 0)
-        elif inZone((left, futureTop, right, futureBottom), Room.currentRoom.boundingBox):
-            self.move(0, dy)
+        self.move(moveX, moveY)
+        
+        
         
     def attackBox(self):
         """Gives the sides of the rectangle that is the attack box... in the
@@ -91,4 +104,5 @@ class CombatSprite(Sprite):
 def updatePositions(timePassed):
     for sprite in Sprite.autoMoveSprites:
         if sprite in Room.currentRoom.spritesInRoom:
+            #print(type(sprite))
             sprite.updatePosition(timePassed)
